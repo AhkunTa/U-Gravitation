@@ -34,7 +34,7 @@ func get_gravity_vector_3d() -> Vector3:
 func set_direction(new_dir: GravityDir) -> void:
 	if new_dir == current_direction:
 		return
-	var old_vec := DIR_VECTORS_2D[current_direction]
+	var old_vec: Vector2 = DIR_VECTORS_2D[current_direction]
 	current_direction = new_dir
-	var new_vec := DIR_VECTORS_2D[current_direction]
+	var new_vec: Vector2 = DIR_VECTORS_2D[current_direction]
 	gravity_changed.emit(old_vec, new_vec)

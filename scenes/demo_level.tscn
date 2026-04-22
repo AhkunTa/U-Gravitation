@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dmgojlqgu00j0"]
 
-[ext_resource type="Script" path="res://scripts/levels/demo_level_builder.gd" id="1"]
+[ext_resource type="Script" uid="uid://dbmfnsimla8k" path="res://scripts/levels/demo_level_builder.gd" id="1"]
 
-[node name="DemoLevel" type="Node"]
+[node name="DemoLevel" type="Node" unique_id=2125104867]
 script = ExtResource("1")

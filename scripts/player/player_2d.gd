@@ -55,7 +55,7 @@ func _physics_process(delta: float) -> void:
 		move_dir += 1.0
 
 	# Movement perpendicular to gravity
-	var right_vec := Vector2(-grav_dir.y, grav_dir.x)
+	var right_vec := Vector2(grav_dir.y, -grav_dir.x)
 	var move_component := right_vec * move_dir * MOVE_SPEED
 	# Remove existing movement along right_vec, replace with input
 	var grav_component := grav_dir * velocity.dot(grav_dir)

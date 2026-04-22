@@ -64,7 +64,19 @@ func _execute_switch(target: Dimension) -> void:
 	if _player_3d.has_method("set_input_enabled"):
 		_player_3d.set_input_enabled(false)
 
-	# Sync position
+	# Fade to black
+	var fade := ColorRect.new()
+	fade.color = Color(0, 0, 0, 0)
+	fade.anchors_preset = Control.PRESET_FULL_RECT
+	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _ui_layer:
+		_ui_layer.add_child(fade)
+
+	var tween := create_tween()
+	tween.tween_property(fade, "color:a", 1.0, TRANSITION_DURATION * 0.5)
+	await tween.finished
+
+	# --- At black frame: sync position and swap worlds ---
 	if target == Dimension.MODE_3D:
 		var pos_2d := _player_2d.global_position
 		_last_z_position = clampf(_last_z_position, -10.0, 10.0)
@@ -89,11 +101,14 @@ func _execute_switch(target: Dimension) -> void:
 			-_player_3d.velocity.y * PIXEL_SCALE
 		)
 
-	# Simple fade transition
-	await _do_transition()
-
 	_apply_dimension(target)
 	current_dimension = target
+
+	# Fade back in
+	var tween2 := create_tween()
+	tween2.tween_property(fade, "color:a", 0.0, TRANSITION_DURATION * 0.5)
+	await tween2.finished
+	fade.queue_free()
 
 	# Unfreeze
 	if target == Dimension.MODE_2D and _player_2d.has_method("set_input_enabled"):
@@ -119,18 +134,4 @@ func _apply_dimension(dim: Dimension) -> void:
 		_world_3d.process_mode = Node.PROCESS_MODE_INHERIT
 
 
-func _do_transition() -> void:
-	# Find or create a fade overlay in the UI layer
-	if not _ui_layer:
-		return
-	var fade := ColorRect.new()
-	fade.color = Color(0, 0, 0, 0)
-	fade.anchors_preset = Control.PRESET_FULL_RECT
-	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ui_layer.add_child(fade)
 
-	var tween := create_tween()
-	tween.tween_property(fade, "color:a", 1.0, TRANSITION_DURATION * 0.5)
-	tween.tween_property(fade, "color:a", 0.0, TRANSITION_DURATION * 0.5)
-	await tween.finished
-	fade.queue_free()
